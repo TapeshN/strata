@@ -10,6 +10,7 @@ category: agents | mcp | rag | guardrails | orchestration | evals | infra | skil
 tags: []          # pick from the taxonomy below
 confidence: learned | hypothesis | speculation
 source: private-work | first-principles | reading | conversation
+implementation_target: coordinator-layer | agent-guardrails | client-rules | shared-prompts | infra-tooling
 ---
 ```
 
@@ -25,6 +26,13 @@ source: private-work | first-principles | reading | conversation
 - `first-principles` — derived by reasoning from known constraints
 - `reading` — from a paper, post, or doc
 - `conversation` — from a discussion, pair session, or review
+
+**`implementation_target`** — optional. Which layer of an agentic system should act on this learning. Populate when the target is clear; omit for cross-cutting or journal entries.
+- `agent-guardrails` — should become a hard rule in the agent guardrails registry (e.g. "never do X" codified as a typed guardrail)
+- `coordinator-layer` — belongs in coordinator doctrine, prompts, or cross-project CLAUDE.md rules
+- `client-rules` — applies to the client-facing deployable layer (agent rules, role definitions, playbooks)
+- `shared-prompts` — belongs in a shared prompt library or worker-launch instructions
+- `infra-tooling` — should change a tool, script, hook, or CI configuration
 
 ## Tag taxonomy
 
