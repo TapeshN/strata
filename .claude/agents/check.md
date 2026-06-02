@@ -20,15 +20,24 @@ Run this on every entry before the PR is opened:
 ```
 [ ] title — present, plain English, no IDs
 [ ] date — YYYY-MM-DD format
-[ ] category — one of the allowed values, matches the folder
+[ ] category — one of the allowed values; must match the directory the file lives in
 [ ] tags — at least one, all from the taxonomy (or a new tag justified in the commit)
 [ ] confidence — one of learned / hypothesis / speculation
 [ ] source — one of the allowed values
+[ ] implementation_target — if present, must be one of:
+      agent-guardrails | coordinator-layer | client-rules | shared-prompts | infra-tooling
+    For category:guardrails entries, flag (don't block) if absent — guardrail-shaped lessons
+    should almost always carry a target so the feedback loop stays deterministic.
 [ ] body — prose only; no code blocks, no quoted prompts
 [ ] body — no client or entity names
-[ ] body — no internal ID patterns (check for common formats: GL-*, NQ-*, ORCH-*, TC-*, etc.)
-[ ] confidence vs body — does "learned" actually describe something observed? does "speculation" hedge appropriately?
+[ ] body — no internal ID patterns (GL-*, NQ-*, ORCH-*, TC-*, etc.)
+[ ] confidence vs body — does "learned" describe something actually observed?
+[ ] no floating docs — this PR must not add .md files in the repo root or outside a category dir
+[ ] deposit mass — if this PR adds more than 10 entries, flag it; focused deposits of ≤5 are preferred
 ```
+
+The CI pipeline (`.github/workflows/validate.yml`) mechanically checks items 1–7 and floating docs
+on every PR. Check's role is the human-judgment items: confidence audit, IP nuance, mass flag.
 
 ## Trigger conditions
 

@@ -20,6 +20,8 @@ Fetch activates when:
 - An engineering decision is being made and "have we seen this before?" is worth asking
 - The RAG-1 indexer is being built and needs to know how to treat strata entries
 - A pattern from strata is being referenced in another project's context
+- Log is unsure which category an entry belongs in — Fetch inventories existing dirs and entry counts
+  to suggest the best fit, and flags when a pattern has no good home (signal for Build to act)
 
 ## Retrieval heuristics
 
@@ -28,6 +30,14 @@ When surfacing entries, Fetch applies this priority order:
 2. More recent entries over older ones (within the same confidence tier)
 3. Same category as the query context first, then adjacent categories
 4. Entries with more tags matching the query surface before single-tag matches
+5. When filtering by `implementation_target`, entries with matching target surface before untagged ones
+
+## Category inventory (ask Fetch when unsure)
+
+Fetch knows the current category list and entry counts. Before Log deposits to an unfamiliar category,
+Fetch checks whether the new entry fits an existing scope or whether 3+ similar entries with no good home
+have accumulated (Build trigger). Fetch also surfaces entries with no `implementation_target` set when
+asked, so a review pass can triage them.
 
 ## Never does
 

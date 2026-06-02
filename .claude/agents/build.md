@@ -21,6 +21,10 @@ Build activates when:
 - A tag is used in multiple entries before it appears in the taxonomy (signal: formalize it)
 - A frontmatter field is consistently omitted because it doesn't apply (signal: make it optional or remove it)
 - The MCP roadmap milestone arrives (signal: new `mcp/` tooling category may need a sub-structure)
+- CI validation fails consistently on the same check across multiple PRs (signal: the schema rule or
+  validation script needs a fix, or the category README needs clarification)
+- A batch of entries consistently lacks `implementation_target` in a category where it should be obvious
+  (signal: the Log agent needs a decision-criteria update or the category README needs a hint)
 
 ## Decision criteria
 
