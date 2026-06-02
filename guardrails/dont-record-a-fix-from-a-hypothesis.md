@@ -5,6 +5,7 @@ category: guardrails
 tags: [verify-dont-trust, ci, context-window, gating]
 confidence: learned
 source: private-work
+implementation_target: agent-guardrails
 ---
 
 Resuming after a context compaction to fix a red CI run, the handoff doc carried a confident, prescriptive fix-plan. Reading the actual CI log showed an entirely different root cause: a recursive file-glob threw a permission-denied error on a directory it couldn't read — a directory present only in the CI environment (the library suppressed only not-found errors by default, not permission errors). The plan in the handoff had been written from a *hypothesis* the prior session never checked against the log — and the compaction summary, smoothing the doc forward, stripped the hedging so the guess read as a settled diagnosis.

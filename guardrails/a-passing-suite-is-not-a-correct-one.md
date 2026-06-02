@@ -5,6 +5,7 @@ category: guardrails
 tags: [verify-dont-trust, evals, determinism, subagents]
 confidence: learned
 source: private-work
+implementation_target: agent-guardrails
 ---
 
 While hardening a safety gate, an adversarial verify stage caught a false-positive regression the builder's own large test suite had missed: a widened destructive-command guard matched flag-like substrings *inside quoted strings*, so a commit whose message merely mentioned a flag would have been wrongly blocked. The builder's tests had only positive cases — they proved the gate fired when it should, never that it stayed quiet when it shouldn't.

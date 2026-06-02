@@ -5,6 +5,7 @@ category: guardrails
 tags: [gating, verify-dont-trust, ip-boundary]
 confidence: learned
 source: private-work
+implementation_target: agent-guardrails
 ---
 
 Two incidents, one root cause. (1) An ad-hoc content scan piped a raw pattern file — including its blank lines — into a `grep -f` count. A blank line is an empty pattern that matches every line, so the scan reported a phantom match and held a clean commit. The production gate strips comments and blanks and was fine; only the *documented ad-hoc command* was buggy. (2) Separately, the behavior of a boundary gate was asserted from its *docstring* ("fails closed if unset") rather than its code — which actually fell back to a default file and ran normally. The "blocked, must relaunch" claim was wrong; a real commit went through clean.
