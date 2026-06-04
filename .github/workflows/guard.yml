@@ -1,0 +1,27 @@
+name: strata-guard
+
+# Backstop for the public journal: the /deposit pipeline paraphrases + IP-gates
+# entries, but a hand-authored PR bypasses it. This runs the same schema +
+# leak checks on every PR and on push to main.
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Schema + private-path leak guard
+        env:
+          # Optional: newline-separated proprietary terms, kept out of this
+          # public repo. Set under Settings → Secrets → Actions if desired.
+          STRATA_BLOCKLIST: ${{ secrets.STRATA_BLOCKLIST }}
+        run: python3 .github/scripts/strata_guard.py
