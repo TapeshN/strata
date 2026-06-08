@@ -86,3 +86,11 @@ observation or event
 ```
 
 The cycle is intentionally slow. A learning that hasn't been paraphrased carefully enough to pass the IP gate isn't ready to be public yet.
+
+---
+
+## Implementation status
+
+The cycle above is the **design contract** — the intended architecture. The current depositor is **simpler than the roster implies**: a deterministic publish step approximates Log's classify + paraphrase and Check's schema/IP gate in code, then opens the draft PR. The four agents define the intended roles and IP discipline; wiring them in as live subagents — and adding Fetch's retrieval arc so the journal feeds *back* into decisions — is still in progress.
+
+Until then, read the roster as the **spec** and this note as the honest **current state**. (Confidence: `learned` — that the gap between a *defined* agent and a *wired* one is real, and worth saying out loud, is itself one of the patterns this journal exists to record.)
