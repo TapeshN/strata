@@ -5,6 +5,7 @@ category: guardrails
 tags: [gating, verify-dont-trust, evals, roles, governance]
 confidence: learned
 source: private-work
+implementation_target: agent-guardrails
 ---
 
 A deep audit of a heavily-gated agent workspace found the governance was lopsided: it gated *inputs* (pre-action hooks blocking dangerous edits) but trusted *outputs*. Nothing read a produced artifact — a diff, a PR, a test run, a release — and emitted a typed PASS/WARN/FAIL/SKIP verdict that steered control flow. Every quality decision was a human eyeballing, or an agent asserting "looks good." The single most load-bearing pattern — a read-only judge, separate from the actor, invoked at a named gate — was entirely absent.

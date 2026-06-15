@@ -1,0 +1,29 @@
+name: Validate strata entries
+
+on:
+  pull_request:
+    paths:
+      - "**/*.md"
+      - ".github/scripts/validate_entries.py"
+  push:
+    branches: [main]
+
+jobs:
+  validate:
+    name: Schema lint + classification
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate entries
+        run: python3 .github/scripts/validate_entries.py
+
+      - name: Deposit size check
+        if: github.event_name == 'pull_request'
+        run: |
+          COUNT=$(git diff --name-only origin/${{ github.base_ref }}...HEAD \
+            -- '*.md' ':!README.md' ':!CHANGELOG.md' ':!schema.md' | wc -l | tr -d ' ')
+          echo "Entries added/modified in this PR: $COUNT"
+          if [ "$COUNT" -gt 10 ]; then
+            echo "::warning::Large deposit ($COUNT entries). Prefer focused deposits of ≤5 entries per PR."
+          fi

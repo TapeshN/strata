@@ -5,6 +5,7 @@ category: guardrails
 tags: [gating, release, ip-boundary, boundaries]
 confidence: learned
 source: private-work
+implementation_target: agent-guardrails
 ---
 
 Attempting to land a release surfaced that a properly-staged commit would be blocked by a boundary gate matching an over-broad term — a term concentrated in the project's *own* new tooling, not in anything leaked. The refinement of that gate's term list had been repeatedly deferred as "cosmetic." It had in fact been silently blocking the release the entire time.

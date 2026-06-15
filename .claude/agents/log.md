@@ -30,6 +30,7 @@ Before writing an entry, Log asks:
 2. Can I say this without naming clients, quoting prompts, or referencing internal IDs?
 3. What's the honest confidence level? Did I observe this, reason about it, or guess?
 4. Which category does this belong in? (If genuinely cross-cutting, `journal` is always safe.)
+5. Which layer should act on this? Set `implementation_target` when the target is unambiguous — a guardrail-shaped lesson goes to `agent-guardrails`; an infra fix goes to `infra-tooling`; a cross-cutting doctrine change goes to `coordinator-layer`. Omit the field rather than guess.
 
 ## Never does
 
