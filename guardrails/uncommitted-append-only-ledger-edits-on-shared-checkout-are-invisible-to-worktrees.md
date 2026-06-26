@@ -2,7 +2,7 @@
 title: Uncommitted edits to an append-only ledger on the shared primary are invisible to all worktrees
 date: 2026-06-16
 category: guardrails
-tags: [worktree, primary-drift, orphaned-uncommitted, rule-12, learnings-ledger, extract-before-compact]
+tags: [worktree, primary-drift, orphaned-uncommitted, session-boundary, append-only-ledger]
 confidence: learned
 source: private-work
 implementation_target: coordinator-layer

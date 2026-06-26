@@ -2,7 +2,7 @@
 title: Dispatching to a new product repository requires a registry entry before the first dispatch
 date: 2026-06-23
 category: orchestration
-tags: [dispatch, registry, new-product, moat, onboarding]
+tags: [dispatch, registry, new-product, dispatch-quality, onboarding]
 confidence: learned
 source: private-work
 implementation_target: coordinator-layer

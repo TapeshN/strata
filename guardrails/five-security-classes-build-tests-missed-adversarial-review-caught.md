@@ -20,6 +20,6 @@ The five generalizable classes:
 
 **Metering quota checks must surface over-quota responses, not swallow them.** A pattern of check-before, record-after for rate-limited expensive operations must propagate the over-quota signal (for example, 402) from the recording step. Swallowing it runs the operation without charging the quota — a cost-abuse window that widens under concurrency.
 
-**Two-phase lazy-reset: the initial read must be inside the locking transaction.** A period-boundary reset that reads current state, then resets to zero inside a transaction is vulnerable to a concurrent increment between the read and the transaction. The read must move inside the transaction boundary (`SELECT ... FOR UPDATE`) so the increment is serialized.
+**Two-phase lazy-reset: the initial read must be inside the locking transaction.** A period-boundary reset that reads current state, then resets to zero inside a transaction is vulnerable to a concurrent increment between the read and the transaction. The read must move inside the transaction boundary — a locking read inside the transaction — so the increment is serialized.
 
 These classes share a structure: the happy-path tests pass because they never exercise the error branch, the substitution, or the race. Catching them requires an adversarial framing — assume the attacker is trying to abuse the path — not a correctness framing.

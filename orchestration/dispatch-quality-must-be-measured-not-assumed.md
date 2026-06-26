@@ -2,7 +2,7 @@
 title: Dispatch quality must be measured at the brief level, not assumed from the result
 date: 2026-06-23
 category: orchestration
-tags: [dispatch, eval, brief-quality, route, model-tier-routing, moat, learning-loop]
+tags: [dispatch, eval, brief-quality, route, model-tier-routing, dispatch-quality, learning-loop]
 confidence: learned
 source: private-work
 implementation_target: coordinator-layer

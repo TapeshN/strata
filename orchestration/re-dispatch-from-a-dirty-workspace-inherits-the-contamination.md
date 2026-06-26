@@ -2,7 +2,7 @@
 title: Dispatching to a cloud agent workspace that holds an open branch contaminates subsequent dispatches
 date: 2026-06-23
 category: orchestration
-tags: [dispatch, cursor, contaminated-base, stacked-pr, fan-out, harvest-gate]
+tags: [dispatch, cloud-agent, contaminated-base, stacked-pr, fan-out, scope-audit]
 confidence: learned
 source: private-work
 implementation_target: coordinator-layer

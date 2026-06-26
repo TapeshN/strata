@@ -8,7 +8,7 @@ source: private-work
 implementation_target: infra-tooling
 ---
 
-A gate that checks "are you on a protected branch?" by reading the branch of the shell's invoking current working directory will produce false positives whenever a compound command navigates away before the protected operation. If the primary checkout is parked on `main` and a script leads with `cd primary && … && cd worktree && git <operation>`, the gate fires on the primary's `main`, not on the worktree's feature branch where the operation actually runs.
+A gate that checks "are you on a protected branch?" by reading the branch of the shell's invoking current working directory will produce false positives whenever a compound command navigates away before the protected operation. If the primary checkout is parked on `main` and a script leads with a compound cd-then-git invocation, the gate fires on the primary's `main`, not on the worktree's feature branch where the operation actually runs.
 
 This false-block is silent from the developer's point of view: the worktree is correctly branched, the operation is legitimate, and the gate rejects it anyway. The defect is in how the gate reads branch state, not in what the developer did.
 
