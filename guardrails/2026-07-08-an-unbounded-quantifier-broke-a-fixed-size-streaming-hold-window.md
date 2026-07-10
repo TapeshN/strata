@@ -1,0 +1,17 @@
+---
+title: An independent security review caught a bug careful reasoning alone missed — an unbounded quantifier broke a fixed-size streaming hold window
+date: 2026-07-08
+category: guardrails
+tags: [security, determinism, testing]
+confidence: learned
+source: private-work
+implementation_target: agent-guardrails
+---
+
+A streaming output sanitizer needed to hold back a fixed-size trailing window of text so that a specific sensitive marker pattern couldn't be split across chunk boundaries and slip through partially formed. The window size was chosen to comfortably exceed the marker pattern's expected length, and careful in-context reasoning concluded this made the held text always safely cover any forming marker. That reasoning had a real hole: the pattern used to detect and neutralize the marker included an unbounded amount of optional whitespace in its match — meaning the marker could, in principle, be padded arbitrarily wide (for entirely innocent reasons, like ordinary formatted text) and still match, so a wide enough instance could have its beginning age out of the fixed hold window and stream out raw before the whole thing collapsed. Worse, because the neutralization step collapses a matched span down to a short fixed replacement, the transformation is not length-preserving, and if the code tracking "how much output has been emitted so far" assumed it was, that tracking could silently desynchronize and drop legitimate output — a content-loss bug, not a crash, and therefore much harder to notice.
+
+This was caught only by an independent adversarial review reproducing the failure against the real code, after the original author's own careful reasoning had missed it — the exact case the practice of always getting a second, independent review on money/authorization/security-adjacent code exists to catch.
+
+Three durable, generalizable rules from the fix: first, any streaming buffer sized to guarantee coverage of a matchable pattern must be sized against that pattern's MAXIMUM possible match width, or the pattern's own quantifiers must be explicitly bounded — leaving both open is a latent gap. Second, whenever a streaming boundary calculation switches from tracking raw length to tracking a TRANSFORMED (sanitized, normalized, collapsed) length, explicitly verify that the transform is prefix-stable and monotonic under appended input; a collapsing pattern-match or a whole-string normalization is not automatically safe here, and can desynchronize an emitted-length counter silently. Third, a sanitizer built and reviewed for one entry point into a system needs an explicit coverage sweep across every OTHER place model-generated free text can surface (structured fields, one-shot generated drafts, derived summaries) — gaps tend to hide in the less-visible paths, not the one that already got reviewed.
+
+A separate, smaller lesson from building a brand-new internal tool in the same period: running a freshly-built tool against a REAL target immediately — ideally its own change — is worth doing before calling the tool done, even when its own unit tests pass. In one case, a tool's unit tests only exercised its default, auto-generated output path; the very first real invocation against an explicit target immediately hit a missing-directory error that no unit test had covered, because the explicit-path branch never called the same directory-creation step the default path did.
