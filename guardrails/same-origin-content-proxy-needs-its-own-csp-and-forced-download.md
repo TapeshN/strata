@@ -1,0 +1,15 @@
+---
+title: Moving untrusted uploads onto a same-origin serving proxy can introduce stored XSS unless the route sets its own restrictive headers
+date: 2026-07-17
+category: guardrails
+tags: [security, boundaries, layering]
+confidence: learned
+source: private-work
+implementation_target: agent-guardrails
+---
+
+Migrating user-uploaded files from a foreign-origin public object store to an authenticated, same-origin proxy route (a route that streams the bytes after checking the requester's permission) is a common and reasonable-looking security improvement — restricting who can fetch the file. But it can silently introduce a NEW vulnerability: if the proxy route returns the uploaded content with its stored content-type header verbatim, an inline (not download) disposition, and no route-specific restrictive content-security-policy, then an attacker who uploads an HTML or SVG file gets that file served, inline, on the APPLICATION'S OWN ORIGIN — meaning any script inside it now runs with the same privileges as any other page on that origin, including an authenticated session cookie. A reviewer clicking a link to that "document" inside the normal admin interface would silently execute attacker-controlled script in their own authenticated session. The pre-migration foreign-origin public store was, in this respect, accidentally SAFER: a browser treats content from a different origin as untrusted by default, giving free containment that same-origin serving throws away.
+
+**The fix for any route that serves untrusted, user-supplied bytes:** set a restrictive, route-specific content-security-policy on that response (deny scripts/defaults outright, sandbox the response) and force `Content-Disposition: attachment` (download, not inline render) for any content type that a browser might execute — HTML and SVG being the two classic cases — regardless of what the global application-wide CSP looks like, since the app-wide policy is not written with untrusted content in mind. A generic `nosniff` content-type-options header does nothing to prevent this: it stops a browser from GUESSING a different type than declared, but does nothing when the server explicitly and correctly declares `text/html`.
+
+**Two secondary, broadly-applicable lessons from this incident:** first, when a new route claims to "mirror" an existing, already-hardened content-serving route, diff the actual RESPONSE HEADERS between the two — not just the authorization logic — because the security of a content-serving route lives almost entirely in its content-type, disposition, and CSP headers, and a copy that reused the auth check but dropped the headers is not actually a mirror. Second, when an SDK or platform's upload flow cannot itself enforce that an uploaded object stays "private" at the point of upload, treat any client-declared privacy setting as advisory only — re-verify the persisted object's actual visibility server-side after the upload completes, and reject or quarantine anything that landed somewhere more exposed than intended, rather than trusting the client's request.
