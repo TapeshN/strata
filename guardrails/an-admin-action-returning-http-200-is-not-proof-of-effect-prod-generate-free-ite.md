@@ -2,7 +2,7 @@
 title: an admin action returning HTTP 200 is not proof of effect: prod "Generate free iteration" enqueued nothing
 date: 2026-07-19
 category: guardrails
-tags: [witness-dont-assert, enqueue-vs-execute, prod, gate-blocked, generation-lane, no-guess-retry.]
+tags: [witness-dont-assert, enqueue-vs-execute, prod, gate-blocked, generation-lane, no-guess-retry]
 confidence: learned
 source: private-work
 ---

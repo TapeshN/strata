@@ -2,7 +2,7 @@
 title: N parallel same-repo lanes ⇒ budget N−1 branch-update cycles on shared tail files
 date: 2026-07-18
 category: orchestration
-tags: [parallel-lanes, merge-order, append-tail.]
+tags: [parallel-lanes, merge-order, append-tail]
 confidence: learned
 source: private-work
 ---
