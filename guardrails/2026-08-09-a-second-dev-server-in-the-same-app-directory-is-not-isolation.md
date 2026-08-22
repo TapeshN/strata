@@ -1,0 +1,13 @@
+---
+title: A second dev server in the same app directory is not isolation
+date: 2026-08-09
+category: guardrails
+tags: [isolation, worktree, process-death-recovery, rollback]
+confidence: learned
+source: private-work
+implementation_target: infra-tooling
+---
+
+Starting a second instance of a framework's dev server against the SAME application directory, on a different port, is not process isolation — the port differs but the shared build-output directory does not. The second process's own startup can clear or rewrite that shared directory while the first process is still serving requests from it: route tables go missing, the module registry breaks, every request against the first process starts failing, and neither process self-heals. The fix once it happens is mechanical — stop the broken server, delete the now-corrupt build-output directory (it is disposable build output, safe to remove), and restart the original process with its original invocation; anything downstream of it (a proxy, a tunnel) needs no separate action once the origin process answers again. The fix upstream is a standing rule for anyone writing or dispatching dev-server instructions: never start a second dev server against a directory another process is already serving — verify against the already-running instance, or clone the app into a separate scratch directory first.
+
+A related recovery discipline, observed the same day and general enough to note here: when the coordinating session itself dies mid-task (a host process exiting, a usage ceiling), what survives depends on how each downstream process was started, not on what it was doing at the time. A detached, backgrounded process — a dev server, a tunnel — keeps running after the parent session exits; a process started directly inside that session's own shell dies with it. A tunnel that outlives its parent resumes serving the same public address the moment its local port answers again, with no reconfiguration needed. Among the coordinating layer's own units of work, a resumable, journaled workflow can replay its already-completed steps for free from its own record when resumed, while an ad hoc background task leaves whatever state happened to be on disk at the moment of death — sometimes a complete, uncommitted diff that only needs the normal finishing steps (verify, commit, push). The recovery order that worked: check which ports are still answering, check which long-lived processes are still alive, check the on-disk/version-control state of every in-flight unit of work, and prefer resuming a journaled workflow over blindly re-dispatching everything from scratch.
