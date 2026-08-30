@@ -1,0 +1,13 @@
+---
+title: Subagent operational hygiene — a backgrounded test run can park a worker for good, a bare shared stash can eat a sibling's work, and an accessibility read can carry a secret verbatim
+date: 2026-08-30
+category: guardrails
+tags: [subagents, worktree, secrets, git]
+confidence: learned
+source: private-work
+implementation_target: shared-prompts
+---
+
+Three separate incidents against subagents doing routine work in one stretch converged on the same theme: a worker's default behavior around shared or asynchronous state is not automatically safe. First, a worker backgrounded a test suite that in fact finished in under a second, then reported itself "waiting for the notification" and parked three separate times despite two explicit instructions to resume — once a subagent treats a task as backgrounded and idle, nothing reliably wakes it back up on its own, and a coordinator eventually ran the same suite inline as a blocking call to get past it. Second, the same worker ran a bare stash-and-pop against a shared git working tree; because the underlying stash is a single shared stack, the pop pulled in and applied a sibling session's separate uncommitted entry along with its own, and the collision was only caught and reversed because the mixed state was inspected before committing. Third, while driving a web console, a query that asked an accessibility tool to find an element by its on-screen description returned a rendered secret verbatim inside that description — the assumption that only a screenshot exposes on-screen text does not hold, because a structured accessibility read exposes whatever text the page actually renders.
+
+None of the three caused lasting damage: the stash collision was reversible and recovered fully, and the exposed secret was never written to a persistent transcript or file. But each is a distinct, generalizable operational rule for any fleet of automated workers touching shared resources. Tests a worker invokes should run as blocking, foreground calls rather than backgrounded-and-awaited, since idle subagents cannot be relied on to self-resume. Any shared git working tree needs a scoped, tagged stash discipline rather than the bare form, precisely because the underlying stack has no notion of whose entry is on top. And any read of a page that might contain a live secret — a screenshot, a full-page text read, or a targeted accessibility-tree query — should be treated as a potential exposure event regardless of which read method is used, favoring the source platform's own reveal-and-copy control over any programmatic read where one exists.
