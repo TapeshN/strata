@@ -1,6 +1,6 @@
 ---
-title: 
-date: 
+title: Ask what you already own before a remedy provisions anything, and verify the config primitive against the vendor's current semantics
+date: 2026-09-06
 category: infra
 tags: [cost-first-remedy, minimatch-slash, vercel-deploymentEnabled, preview-credentials, verify-the-primitive.]
 confidence: learned
